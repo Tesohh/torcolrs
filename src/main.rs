@@ -1,3 +1,7 @@
+use crate::tokenizer::tokenizer::tokenize;
+
+pub mod tokenizer;
+
 fn main() {
-    println!("Hello, world!");
+    dbg!(tokenize("{{\"giura\"}}"));
 }
