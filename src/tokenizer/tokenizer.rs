@@ -1,3 +1,4 @@
+use super::blocks;
 use super::token::{Token, Tokens};
 
 fn try_identify(input: char) -> Option<Token> {
@@ -8,31 +9,6 @@ fn try_identify(input: char) -> Option<Token> {
         '}' => Some(Token::SquirlyClose),
         _ => None,
     }
-}
-
-fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
-    let first = input.chars().nth(*cursor)?;
-
-    if !vec!['"'].contains(&first) {
-        return None;
-    }
-
-    let mut inner: Vec<char> = vec![];
-    let mut subcursor = *cursor + 1;
-
-    loop {
-        let c = input.chars().nth(subcursor)?;
-        if c == first {
-            break;
-        }
-        inner.push(c);
-        subcursor += 1;
-    }
-
-    return match &first {
-        '"' => Some((Token::Str(String::from_iter(inner)), subcursor)),
-        _ => None,
-    };
 }
 
 /// run for every line!
@@ -48,7 +24,7 @@ pub fn tokenize(input: &str) -> Tokens {
             continue;
         }
 
-        let tok = block(input, &cursor);
+        let tok = blocks::block(input, &cursor);
         if let Some(v) = tok {
             tokens.push(v.0);
             cursor = v.1;
