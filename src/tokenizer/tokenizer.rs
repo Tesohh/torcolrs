@@ -35,6 +35,7 @@ fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
     };
 }
 
+/// run for every line!
 pub fn tokenize(input: &str) -> Tokens {
     let mut tokens: Tokens = vec![];
     let mut cursor = 0usize;
@@ -56,18 +57,29 @@ pub fn tokenize(input: &str) -> Tokens {
         cursor += 1;
     }
 
-    // for i in input.chars() {
-    //     // try single char token
-    //     let tok = try_identify(i);
-    //     if let Some(v) = tok {
-    //         tokens.push(v);
-    //         cursor += 1;
-    //         continue;
-    //     }
-    //
-    //     // we are dealing with a string
-    //     if i == '"' {}
-    // }
-
     return tokens;
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{tokenizer::token::Token, *};
+
+    #[test]
+    fn test_tokenize() {
+        assert_eq!(
+            tokenize(r#"())) {"#),
+            vec![
+                Token::ParOpen,
+                Token::ParClose,
+                Token::ParClose,
+                Token::ParClose,
+                Token::SquirlyOpen,
+            ]
+        );
+
+        assert_eq!(
+            tokenize(r#"("heyy")"#),
+            vec![Token::ParOpen, Token::Str("heyy".into()), Token::ParClose,]
+        );
+    }
 }
