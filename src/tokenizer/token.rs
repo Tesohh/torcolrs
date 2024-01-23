@@ -2,7 +2,7 @@
 pub enum Token {
     Cmd(String),
     Var(String),
-    Num(isize),
+    Num(f64),
     Str(String),
     ParOpen,
     ParClose,

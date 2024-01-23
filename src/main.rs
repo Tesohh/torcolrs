@@ -3,5 +3,5 @@ use crate::tokenizer::tokenizer::tokenize;
 pub mod tokenizer;
 
 fn main() {
-    dbg!(tokenize(r#"{{"hi"}}"#));
+    dbg!(tokenize(r#"("morgen)"#));
 }
