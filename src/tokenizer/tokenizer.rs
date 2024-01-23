@@ -75,11 +75,9 @@ mod tests {
             vec![Token::ParOpen, Token::Str("heyy".into()), Token::ParClose,]
         );
 
-        // FIX: unfinisheed string should parse as string until the end
-        // this could be implemented similarly to how number_parse works
         assert_eq!(
             tokenize(r#"("morgen)"#),
-            vec![Token::ParOpen, Token::ParClose]
+            vec![Token::ParOpen, Token::Str("morgen)".into())]
         );
 
         assert_eq!(

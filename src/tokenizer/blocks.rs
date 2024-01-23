@@ -11,10 +11,15 @@ pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
     let mut subcursor = *cursor + 1;
 
     loop {
-        let c = input.chars().nth(subcursor)?;
-        if c == first {
+        let c = input.chars().nth(subcursor);
+        if c == None {
             break;
         }
+        if c == Some(first) {
+            subcursor += 1;
+            break;
+        }
+        let c = c?;
         inner.push(c);
         subcursor += 1;
     }
