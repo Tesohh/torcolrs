@@ -6,8 +6,8 @@ use super::{blocks, number_parse};
 
 pub fn try_identify(input: char) -> Option<Token> {
     match input {
-        '(' => Some(Token::ParOpen),
-        ')' => Some(Token::ParClose),
+        // '(' => Some(Token::ParOpen),
+        // ')' => Some(Token::ParClose),
         '{' => Some(Token::SquirlyOpen),
         '}' => Some(Token::SquirlyClose),
         _ => None,
@@ -47,7 +47,7 @@ pub fn tokenize(input: &str, tdvm: &Tdvm) -> Tokens {
             continue;
         }
 
-        let tok = blocks::block(input, &cursor);
+        let tok = blocks::block(input, &cursor, &tdvm);
         if let Some(v) = tok {
             tokens.push(v.0);
             cursor = v.1;

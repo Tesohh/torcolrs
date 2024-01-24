@@ -5,12 +5,13 @@ mod tokenizer;
 
 fn main() -> Result<(), anyhow::Error> {
     let mut tdvm = Tdvm::default();
+    dbg!(tokenize("(stampa 5 4.2)", &tdvm));
 
-    tdvm.input = r#"stampa ciao
-    stampa"#
-        .into();
-
-    let res = tdvm.run()?;
+    // tdvm.input = r#"stampa ciao
+    // stampa"#
+    //     .into();
+    //
+    // let res = tdvm.run()?;
 
     // dbg!(tdvm);
     // dbg!(tokenize(

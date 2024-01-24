@@ -8,6 +8,7 @@ pub enum Token {
     Type(String),
     Comment(String),
     Value(Value),
+    Sub(Tokens),
     // Num(f64),
     // Str(String),
     // Bool(bool),

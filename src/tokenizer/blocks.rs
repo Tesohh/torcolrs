@@ -1,11 +1,16 @@
-use crate::tdvm::tdvm::Value;
+use std::collections::HashMap;
 
-use super::token::Token;
+use crate::tdvm::tdvm::{Tdvm, Value};
 
-pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
+use super::{token::Token, tokenizer::tokenize};
+
+pub(crate) fn block(input: &str, cursor: &usize, tdvm: &Tdvm) -> Option<(Token, usize)> {
     let first = input.chars().nth(*cursor)?;
 
-    if !vec!['"'].contains(&first) {
+    let first_last: HashMap<_, _> = HashMap::from([('"', '"'), ('(', ')')]);
+    let expected_last = *first_last.get(&first)?;
+
+    if !vec!['"', '('].contains(&first) {
         return None;
     }
 
@@ -17,7 +22,7 @@ pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
         if c == None {
             break;
         }
-        if c == Some(first) {
+        if c == Some(expected_last) {
             subcursor += 1;
             break;
         }
@@ -28,8 +33,11 @@ pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
 
     let s = String::from_iter(inner);
 
+    let tokens = tokenize(s.as_str(), &tdvm);
+
     return match &first {
         '"' => Some((Token::Value(Value::Str(s)), subcursor)),
+        '(' => Some((Token::Sub(tokens), subcursor)),
         _ => None,
     };
 }
