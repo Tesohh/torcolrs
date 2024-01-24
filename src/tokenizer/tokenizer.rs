@@ -99,26 +99,34 @@ mod tests {
 
         assert_eq!(
             tokenize(r#"("heyy")"#, &tdvm),
-            vec![Token::ParOpen, Token::Str("heyy".into()), Token::ParClose,]
+            vec![
+                Token::ParOpen,
+                Token::Value(Value::Str("heyy".into())),
+                Token::ParClose,
+            ]
         );
 
         assert_eq!(
             tokenize(r#"("morgen)"#, &tdvm),
-            vec![Token::ParOpen, Token::Str("morgen)".into())]
+            vec![Token::ParOpen, Token::Value(Value::Str("morgen)".into()))]
         );
 
         assert_eq!(
             tokenize(r#"("heyy 12 34.34")"#, &tdvm),
             vec![
                 Token::ParOpen,
-                Token::Str("heyy 12 34.34".into()),
+                Token::Value(Value::Str("heyy 12 34.34".into())),
                 Token::ParClose,
             ]
         );
 
         assert_eq!(
             tokenize(r#"12 32 43.34"#, &tdvm),
-            vec![Token::Num(12.0), Token::Num(32.0), Token::Num(43.34)]
+            vec![
+                Token::Value(Value::Num(12.0)),
+                Token::Value(Value::Num(32.0)),
+                Token::Value(Value::Num(43.34))
+            ]
         );
 
         assert_eq!(
@@ -134,9 +142,9 @@ mod tests {
             tokenize(r#"stampa vera (faus) GOZZO"#, &tdvm),
             vec![
                 Token::Cmd("stampa".into()),
-                Token::Bool(true),
+                Token::Value(Value::Bool(true)),
                 Token::ParOpen,
-                Token::Bool(false),
+                Token::Value(Value::Bool(false)),
                 Token::ParClose,
                 Token::Unknown("GOZZO".into()),
             ]

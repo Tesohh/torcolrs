@@ -1,3 +1,5 @@
+use crate::tdvm::tdvm::Value;
+
 use super::token::Token;
 
 pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
@@ -24,8 +26,10 @@ pub(crate) fn block(input: &str, cursor: &usize) -> Option<(Token, usize)> {
         subcursor += 1;
     }
 
+    let s = String::from_iter(inner);
+
     return match &first {
-        '"' => Some((Token::Str(String::from_iter(inner)), subcursor)),
+        '"' => Some((Token::Value(Value::Str(s)), subcursor)),
         _ => None,
     };
 }

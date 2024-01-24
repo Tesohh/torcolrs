@@ -1,4 +1,4 @@
-use crate::tdvm::tdvm::Tdvm;
+use crate::tdvm::tdvm::{Tdvm, Value};
 
 use super::{token::Token, tokenizer::try_identify};
 
@@ -16,8 +16,8 @@ fn identify_word(input: String, tdvm: &Tdvm) -> Token {
     }
 
     match input.as_str() {
-        "vera" => Token::Bool(true),
-        "faus" => Token::Bool(false),
+        "vera" => Token::Value(Value::Bool(true)),
+        "faus" => Token::Value(Value::Bool(false)),
 
         &_ => Token::Unknown(input),
     }

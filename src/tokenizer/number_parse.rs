@@ -1,3 +1,5 @@
+use crate::tdvm::tdvm::Value;
+
 use super::token::Token;
 
 pub(crate) fn number_parse(input: &str, cursor: &usize) -> Option<(Token, usize)> {
@@ -23,5 +25,5 @@ pub(crate) fn number_parse(input: &str, cursor: &usize) -> Option<(Token, usize)
     let s = String::from_iter(inner);
     let n: f64 = s.parse().ok()?;
 
-    return Some((Token::Num(n), subcursor));
+    return Some((Token::Value(Value::Num(n)), subcursor));
 }

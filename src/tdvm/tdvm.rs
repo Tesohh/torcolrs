@@ -5,7 +5,7 @@ use anyhow::{anyhow, Context};
 
 use crate::tokenizer::{token::Token, tokenizer::tokenize};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Value {
     Bool(bool),
     Num(f64),
