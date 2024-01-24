@@ -1,7 +1,10 @@
-use crate::tokenizer::tokenizer::tokenize;
+use crate::{tdvm::tdvm::Tdvm, tokenizer::tokenizer::tokenize};
 
-pub mod tokenizer;
+mod tdvm;
+mod tokenizer;
 
 fn main() {
-    dbg!(tokenize(r#"("morgen)"#));
+    let tdvm = Tdvm::default();
+    // dbg!(tdvm);
+    dbg!(tokenize(r#"stampa (vera)"#, &tdvm));
 }
