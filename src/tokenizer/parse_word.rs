@@ -11,6 +11,10 @@ fn identify_word(input: String, tdvm: &Tdvm) -> Token {
         return Token::Type(input);
     }
 
+    if tdvm.memory.contains_key(&input) {
+        return Token::Var(input);
+    }
+
     match input.as_str() {
         "vera" => Token::Bool(true),
         "faus" => Token::Bool(false),
