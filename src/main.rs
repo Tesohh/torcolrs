@@ -5,11 +5,9 @@ mod tokenizer;
 
 fn main() -> anyhow::Result<()> {
     let mut tdvm = Tdvm::default();
-    // dbg!(tokenize(r#"(stampa 5 4.2  "#, &tdvm));
+    // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
-    tdvm.input = r#"stampa ( ciao (stampa) (stampa) )
-    stampa"#
-        .into();
+    tdvm.input = r#"stampa (op4 (op2) (op3))"#.into();
 
     let res = tdvm.run()?;
 

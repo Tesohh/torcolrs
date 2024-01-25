@@ -144,8 +144,14 @@ mod tests {
         );
 
         assert_eq!(
-            tokenize(r#"(stampa (lasa 4 4 (lasa 5 5) ))"#, &tdvm),
-            vec![]
+            tokenize(r#"(stampa (lasa (4)))"#, &tdvm),
+            vec![Token::Sub(vec![
+                Token::Cmd("stampa".into()),
+                Token::Sub(vec![
+                    Token::Cmd("lasa".into()),
+                    Token::Sub(vec![Token::Value(Value::Num(4.0))])
+                ])
+            ])]
         );
     }
 }

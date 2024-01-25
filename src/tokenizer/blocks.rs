@@ -16,6 +16,7 @@ pub(crate) fn block(input: &str, cursor: &usize, tdvm: &Tdvm) -> Option<(Token, 
 
     let mut inner: Vec<char> = vec![];
     let mut subcursor = *cursor + 1;
+    let mut bracket_count = 1;
 
     loop {
         let c = input.chars().nth(subcursor);
@@ -23,8 +24,13 @@ pub(crate) fn block(input: &str, cursor: &usize, tdvm: &Tdvm) -> Option<(Token, 
             break;
         }
         if c == Some(expected_last) {
-            subcursor += 1;
-            break;
+            bracket_count -= 1;
+            if bracket_count == 0 {
+                subcursor += 1;
+                break;
+            }
+        } else if c == Some(first) {
+            bracket_count += 1;
         }
         let c = c?;
         inner.push(c);
