@@ -142,5 +142,10 @@ mod tests {
                 Token::Unknown("fassa".into()),
             ]
         );
+
+        assert_eq!(
+            tokenize(r#"(stampa (lasa 4 4 (lasa 5 5) ))"#, &tdvm),
+            vec![]
+        );
     }
 }

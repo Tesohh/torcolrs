@@ -1,9 +1,12 @@
 #![allow(unused)] // TODO: remove this
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Context};
+use anyhow::{anyhow, Context, Ok};
 
-use crate::tokenizer::{token::Token, tokenizer::tokenize};
+use crate::tokenizer::{
+    token::{Token, Tokens},
+    tokenizer::tokenize,
+};
 
 #[derive(Debug, PartialEq)]
 pub enum Value {
@@ -11,6 +14,7 @@ pub enum Value {
     Num(f64),
     Str(String),
     Array(Vec<Value>),
+    Void,
     // Arg((String, Type))
 }
 
@@ -36,10 +40,24 @@ impl Default for Tdvm {
 }
 
 impl Tdvm {
-    fn gen_err(&self, err: anyhow::Error) -> Result<(), anyhow::Error> {
+    fn gen_err(&self, err: anyhow::Error) -> anyhow::Result<()> {
         return Err(anyhow!("[tdvm: line {}] {}", self.linecursor + 1, err));
     }
-    pub fn run(&mut self) -> Result<(), anyhow::Error> {
+    fn run_cmd(&mut self, tokens: &mut Tokens) -> anyhow::Result<Value> {
+        // first run all subs
+        // recursively...
+        for i in 0..tokens.len() {
+            if let Token::Sub(subtokens) = tokens.get_mut(i).context("out of bounds")? {
+                let value = self.run_cmd(subtokens)?;
+                tokens[i] = Token::Value(value)
+            }
+        }
+        dbg!(tokens);
+        // then execute the current command...
+        // and return its value...
+        Ok(Value::Void)
+    }
+    pub fn run(&mut self) -> anyhow::Result<()> {
         if self.input.is_empty() {
             return Err(anyhow!("input is empty"));
         }
@@ -56,7 +74,7 @@ impl Tdvm {
                 continue;
             }
 
-            let tokens = tokenize(line, self);
+            let mut tokens = tokenize(line, self);
 
             // check that the first token is a command
             match tokens.get(0).context("first token doesn't exist")? {
@@ -65,16 +83,16 @@ impl Tdvm {
             }
 
             // check that parentheses are closed
-            let open_par_count = tokens.iter().filter(|tok| tok == &&Token::ParOpen).count();
-            let close_par_count = tokens.iter().filter(|tok| tok == &&Token::ParClose).count();
-            if open_par_count != close_par_count {
-                return self.gen_err(anyhow!(
-                    "open parentheses count is different to the closed parenthesis count"
-                ));
-            }
+            // let open_par_count = tokens.iter().filter(|tok| tok == &&Token::ParOpen).count();
+            // let close_par_count = tokens.iter().filter(|tok| tok == &&Token::ParClose).count();
+            // if open_par_count != close_par_count {
+            //     return self.gen_err(anyhow!(
+            //         "open parentheses count is different to the closed parenthesis count"
+            //     ));
+            // }
 
-            // parse all subcommands
-            // (try to) execute them
+            // (try to) execute subs
+            self.run_cmd(&mut tokens);
             // if error, ABORT EVERYTHING and panic
             // replace the subcommand with the return value
             // execute the main command
