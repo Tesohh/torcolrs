@@ -5,7 +5,7 @@ mod tokenizer;
 
 fn main() -> Result<(), anyhow::Error> {
     let mut tdvm = Tdvm::default();
-    dbg!(tokenize("(stampa 5 4.2)", &tdvm));
+    dbg!(tokenize(r#"(stampa 5 4.2  "#, &tdvm));
 
     // tdvm.input = r#"stampa ciao
     // stampa"#
