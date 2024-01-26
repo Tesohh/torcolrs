@@ -8,13 +8,13 @@ use crate::tokenizer::{
     tokenizer::tokenize,
 };
 
-use super::value::Value;
+use super::{command::Command, commands::commands, value::Value};
 
 #[derive(Debug)]
 pub struct Tdvm {
     pub input: String,
     linecursor: usize,
-    pub commands: Vec<String>, // TEMP: will change to a hashmap probably, which takes in an array of tokens as args??
+    pub commands: Vec<Command>, // TEMP: will change to a hashmap probably, which takes in an array of tokens as args??
     pub types: Vec<String>,
     pub memory: HashMap<String, Value>,
 }
@@ -24,7 +24,7 @@ impl Default for Tdvm {
         Self {
             input: Default::default(),
             linecursor: Default::default(),
-            commands: vec!["stampa".into(), "lasa".into()],
+            commands: commands(),
             types: vec!["Num".into(), "Str".into(), "Bool".into()],
             memory: Default::default(),
         }

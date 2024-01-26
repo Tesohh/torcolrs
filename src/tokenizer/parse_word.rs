@@ -3,7 +3,8 @@ use crate::tdvm::{tdvm::Tdvm, value::Value};
 use super::{token::Token, tokenizer::try_identify};
 
 fn identify_word(input: String, tdvm: &Tdvm) -> Token {
-    if tdvm.commands.contains(&input) {
+    let cmd_names: Vec<_> = tdvm.commands.iter().map(|c| &c.name).collect();
+    if cmd_names.contains(&&input) {
         return Token::Cmd(input);
     }
 
