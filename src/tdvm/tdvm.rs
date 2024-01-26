@@ -8,15 +8,7 @@ use crate::tokenizer::{
     tokenizer::tokenize,
 };
 
-#[derive(Debug, PartialEq)]
-pub enum Value {
-    Bool(bool),
-    Num(f64),
-    Str(String),
-    Array(Vec<Value>),
-    Void,
-    // Arg((String, Type))
-}
+use super::value::Value;
 
 #[derive(Debug)]
 pub struct Tdvm {
@@ -52,9 +44,12 @@ impl Tdvm {
                 tokens[i] = Token::Value(value)
             }
         }
-        dbg!(tokens);
+
         // then execute the current command...
+        // find the current command
+
         // and return its value...
+
         Ok(Value::Void)
     }
     pub fn run(&mut self) -> anyhow::Result<()> {

@@ -1,4 +1,4 @@
-use crate::tdvm::tdvm::Value;
+use crate::tdvm::value::Value;
 
 use super::token::Token;
 

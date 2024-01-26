@@ -1,6 +1,6 @@
 #![allow(unused)]
 
-use crate::tdvm::tdvm::Value; // TODO: remove this
+use crate::tdvm::value::Value; // TODO: remove this
 #[derive(Debug, PartialEq)]
 pub enum Token {
     Cmd(String),

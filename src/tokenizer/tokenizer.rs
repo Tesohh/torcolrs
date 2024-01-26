@@ -77,7 +77,7 @@ pub fn tokenize(input: &str, tdvm: &Tdvm) -> Tokens {
 #[cfg(test)]
 mod tests {
     use crate::{
-        tdvm::tdvm::{Tdvm, Value},
+        tdvm::{tdvm::Tdvm, value::Value},
         tokenizer::token::Token,
         *,
     };

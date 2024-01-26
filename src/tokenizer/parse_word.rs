@@ -1,4 +1,4 @@
-use crate::tdvm::tdvm::{Tdvm, Value};
+use crate::tdvm::{tdvm::Tdvm, value::Value};
 
 use super::{token::Token, tokenizer::try_identify};
 
