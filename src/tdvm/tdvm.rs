@@ -48,9 +48,19 @@ impl Tdvm {
         // then execute the current command...
         // find the current command
 
-        // and return its value...
+        let mut cmd: Option<&Command> = None;
+        if let Token::Cmd(name) = tokens.get(0).context("out of bounds")? {
+            for c in &self.commands {
+                if &c.name == name {
+                    cmd = Some(c)
+                }
+            }
+        }
 
-        Ok(Value::Void)
+        dbg!(&tokens);
+        let cmd = cmd.context("no command with that name was found")?;
+
+        return cmd.run(tokens.to_vec(), self);
     }
     pub fn run(&mut self) -> anyhow::Result<()> {
         if self.input.is_empty() {
@@ -87,7 +97,7 @@ impl Tdvm {
             // }
 
             // (try to) execute subs
-            self.run_cmd(&mut tokens);
+            self.run_cmd(&mut tokens)?;
             // if error, ABORT EVERYTHING and panic
             // replace the subcommand with the return value
             // execute the main command

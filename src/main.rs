@@ -1,4 +1,4 @@
-use crate::{tdvm::tdvm::Tdvm, tokenizer::tokenizer::tokenize};
+use crate::tdvm::tdvm::Tdvm;
 
 mod tdvm;
 mod tokenizer;
@@ -7,14 +7,13 @@ fn main() -> anyhow::Result<()> {
     let mut tdvm = Tdvm::default();
     // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
-    tdvm.input = r#"stampa (op4 (op2) (op3))"#.into();
+    tdvm.input = r#"stampa (jonta (jonta 4 2) (sotra 6 4))"#.into();
 
-    let res = tdvm.run()?;
+    dbg!(tdvm.run())
 
     // dbg!(tdvm);
     // dbg!(tokenize(
     //     r#"stampa (vera) feiowjfoijw "GIURAA" 12 34 69.420 # ciaoo "morgen""#,
     //     &tdvm
     // ));
-    Ok(())
 }

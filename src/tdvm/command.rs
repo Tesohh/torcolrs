@@ -1,5 +1,3 @@
-use std::any::Any;
-
 use anyhow::{bail, Context};
 
 use crate::tokenizer::token::{Token, Tokens};
@@ -15,7 +13,7 @@ pub struct Arg {
 #[derive(Debug)]
 pub enum ArgsRequest {
     Limited(Vec<Arg>),
-    LastIsInfinite(Vec<Arg>),
+    // LastIsInfinite(Vec<Arg>),
     Void,
 }
 
@@ -39,7 +37,12 @@ impl Command {
                     )
                 }
 
+                // check type correctness
                 for (i, arg) in args.iter().enumerate() {
+                    if arg.expected == Type::Any {
+                        continue;
+                    }
+
                     let tok = tokens.get(i).context("out of bounds")?;
 
                     let val = match tok {
@@ -65,7 +68,7 @@ impl Command {
                 }
             }
 
-            ArgsRequest::LastIsInfinite(_) => todo!(),
+            // ArgsRequest::LastIsInfinite(_) => todo!(),
             ArgsRequest::Void => {}
         };
 
@@ -74,6 +77,8 @@ impl Command {
 
     pub fn run(&self, tokens: Tokens, tdvm: &Tdvm) -> anyhow::Result<Value> {
         // check if arguments are correct
+        let mut tokens = tokens;
+        tokens.remove(0);
         self.verify_args(&tokens)?;
 
         let values: Vec<_> = tokens

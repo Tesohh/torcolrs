@@ -1,7 +1,7 @@
 #![allow(unused)]
 
 use crate::tdvm::value::Value; // TODO: remove this
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Token {
     Cmd(String),
     Var(String),
