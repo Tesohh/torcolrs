@@ -48,16 +48,15 @@ impl Tdvm {
         // then execute the current command...
         // find the current command
 
-        let mut cmd: Option<&Command> = None;
+        let mut cmd: Option<Command> = None;
         if let Token::Cmd(name) = tokens.get(0).context("out of bounds")? {
             for c in &self.commands {
                 if &c.name == name {
-                    cmd = Some(c)
+                    cmd = Some(c.clone())
                 }
             }
         }
 
-        dbg!(&tokens);
         let cmd = cmd.context("no command with that name was found")?;
 
         return cmd.run(tokens.to_vec(), self);

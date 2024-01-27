@@ -61,11 +61,26 @@ pub fn commands() -> Vec<Command> {
                 Ok(Value::Num(sum))
             },
         },
-        // TODO:
         Command {
             name: "lasa".into(),
-            requested_args: ArgsRequest::Void,
-            inner: |_args, _tdvm| Ok(Value::Void),
+            requested_args: ArgsRequest::Limited(vec![
+                Arg {
+                    name: "name".into(),
+                    expected: Type::Str,
+                },
+                Arg {
+                    name: "value".into(),
+                    expected: Type::Any,
+                },
+            ]),
+            inner: |args, tdvm| {
+                let name = args.get(0).context("name")?.extract_str()?;
+                let value = args.get(1).context("value")?;
+                tdvm.memory.insert(name, value.clone());
+                dbg!(&tdvm.memory);
+
+                Ok(value.clone())
+            },
         },
     ]
 }

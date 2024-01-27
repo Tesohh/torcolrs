@@ -4,24 +4,24 @@ use crate::tokenizer::token::{Token, Tokens};
 
 use super::{tdvm::Tdvm, types::Type, value::Value};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Arg {
     pub name: String,
     pub expected: Type,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ArgsRequest {
     Limited(Vec<Arg>),
     // LastIsInfinite(Vec<Arg>),
     Void,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Command {
     pub name: String,
     pub requested_args: ArgsRequest,
-    pub inner: fn(args: Vec<Value>, tdvm: &Tdvm) -> anyhow::Result<Value>,
+    pub inner: fn(args: Vec<Value>, tdvm: &mut Tdvm) -> anyhow::Result<Value>,
 }
 
 impl Command {
@@ -75,7 +75,7 @@ impl Command {
         Ok(())
     }
 
-    pub fn run(&self, tokens: Tokens, tdvm: &Tdvm) -> anyhow::Result<Value> {
+    pub fn run(&self, tokens: Tokens, tdvm: &mut Tdvm) -> anyhow::Result<Value> {
         // check if arguments are correct
         let mut tokens = tokens;
         tokens.remove(0);
@@ -85,7 +85,7 @@ impl Command {
             .into_iter()
             .filter_map(|tok| match tok {
                 Token::Value(val) => Some(val),
-                Token::Var(_) => todo!("will get the var from memory"),
+                Token::Var(key) => tdvm.memory.get(&key).cloned(),
                 // _ => bail!("command {}: got unexpected token", self.name),
                 // at this point they should all be values right?
                 _ => None,
