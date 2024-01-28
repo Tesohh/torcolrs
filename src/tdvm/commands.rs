@@ -1,9 +1,12 @@
 use anyhow::{bail, Context, Ok};
 
-use crate::tdvm::{
-    command::{Arg, ArgsRequest},
-    types::Type,
-    value::{Extract, Value},
+use crate::{
+    args,
+    tdvm::{
+        command::{Arg, ArgsRequest},
+        types::Type,
+        value::{Extract, Value},
+    },
 };
 
 use super::command::Command;
@@ -12,10 +15,7 @@ pub fn commands() -> Vec<Command> {
     vec![
         Command {
             name: "stampa".into(),
-            requested_args: ArgsRequest::Limited(vec![Arg {
-                name: "s".into(),
-                expected: Type::Any,
-            }]),
+            requested_args: args!(val: Any),
             inner: |args, _tdvm| {
                 println!("{}", args.get(0).context("not found")?);
                 Ok(Value::Void)
@@ -23,18 +23,9 @@ pub fn commands() -> Vec<Command> {
         },
         Command {
             name: "jonta".into(),
-            requested_args: ArgsRequest::Limited(vec![
-                Arg {
-                    name: "num1".into(),
-                    expected: Type::Num,
-                },
-                Arg {
-                    name: "num2".into(),
-                    expected: Type::Num,
-                },
-            ]),
+            requested_args: args!(num1: Num, num2: Num),
             inner: |args, _tdvm| {
-                let args = (args.get(0).context("num1")?, args.get(1).context("num1")?);
+                let args = (args.get(0).context("num1")?, args.get(1).context("num2")?);
                 let n1 = args.0.extract_num()?;
                 let n2 = args.1.extract_num()?;
                 Ok(Value::Num(n1 + n2))
@@ -42,37 +33,17 @@ pub fn commands() -> Vec<Command> {
         },
         Command {
             name: "sotra".into(),
-            requested_args: ArgsRequest::Limited(vec![
-                Arg {
-                    name: "num1".into(),
-                    expected: Type::Num,
-                },
-                Arg {
-                    name: "num2".into(),
-                    expected: Type::Num,
-                },
-            ]),
+            requested_args: args!(num1: Num, num2: Num),
             inner: |args, _tdvm| {
-                let args = (args.get(0).context("num1")?, args.get(1).context("num1")?);
-                let mut sum = 0.0;
-                if let (Value::Num(n1), Value::Num(n2)) = args {
-                    sum = n1 - n2;
-                }
-                Ok(Value::Num(sum))
+                let args = (args.get(0).context("num1")?, args.get(1).context("num2")?);
+                let n1 = args.0.extract_num()?;
+                let n2 = args.1.extract_num()?;
+                Ok(Value::Num(n1 - n2))
             },
         },
         Command {
             name: "lasa".into(),
-            requested_args: ArgsRequest::Limited(vec![
-                Arg {
-                    name: "name".into(),
-                    expected: Type::Str,
-                },
-                Arg {
-                    name: "value".into(),
-                    expected: Type::Any,
-                },
-            ]),
+            requested_args: args!(name: Str, value: Any),
             inner: |args, tdvm| {
                 let name = args.get(0).context("name")?.extract_str()?;
                 let value = args.get(1).context("value")?;

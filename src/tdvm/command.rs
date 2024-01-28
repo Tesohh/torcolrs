@@ -10,6 +10,22 @@ pub struct Arg {
     pub expected: Type,
 }
 
+#[macro_export]
+macro_rules! args {
+    ($($name:ident : $ty:ident),*) => {
+        {
+            ArgsRequest::Limited(vec![
+                $(
+                    Arg {
+                        name: stringify!($name).to_string(),
+                        expected: Type::$ty,
+                    },
+                )*
+            ])
+        }
+    };
+}
+
 #[derive(Debug, Clone)]
 pub enum ArgsRequest {
     Limited(Vec<Arg>),
@@ -25,7 +41,7 @@ pub struct Command {
 }
 
 impl Command {
-    fn verify_args(&self, tokens: &Tokens) -> anyhow::Result<()> {
+    fn verify_args(&self, tokens: &Tokens, tdvm: &mut Tdvm) -> anyhow::Result<()> {
         match &self.requested_args {
             ArgsRequest::Limited(args) => {
                 if args.len() != tokens.len() {
@@ -46,7 +62,7 @@ impl Command {
                     let tok = tokens.get(i).context("out of bounds")?;
 
                     let val = match tok {
-                        Token::Var(_) => todo!("will get the var from memory"),
+                        Token::Var(k) => tdvm.memory.get(k).context("variable doesnt exist")?,
                         Token::Value(val) => val,
                         _ => bail!(
                             "command {} on arg {}: got unexpected token",
@@ -79,7 +95,7 @@ impl Command {
         // check if arguments are correct
         let mut tokens = tokens;
         tokens.remove(0);
-        self.verify_args(&tokens)?;
+        self.verify_args(&tokens, tdvm)?;
 
         let values: Vec<_> = tokens
             .into_iter()
