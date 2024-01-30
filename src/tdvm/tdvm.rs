@@ -8,7 +8,7 @@ use crate::tokenizer::{
     tokenizer::tokenize,
 };
 
-use super::{command::Command, commands::commands, value::Value, var::Var};
+use super::{cmds::commands, command::Command, value::Value, var::Var};
 
 #[derive(Debug)]
 pub struct Tdvm {
