@@ -6,6 +6,7 @@ use crate::{
         command::{Arg, ArgsRequest},
         types::Type,
         value::{Extract, Value},
+        var::Var,
     },
 };
 
@@ -47,7 +48,12 @@ pub fn commands() -> Vec<Command> {
             inner: |args, tdvm| {
                 let name = args.get(0).context("name")?.extract_str()?;
                 let value = args.get(1).context("value")?;
-                tdvm.memory.insert(name, value.clone());
+                tdvm.memory.insert(
+                    name,
+                    Var {
+                        value: value.clone(),
+                    },
+                );
                 dbg!(&tdvm.memory);
 
                 Ok(value.clone())

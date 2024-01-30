@@ -62,7 +62,9 @@ impl Command {
                     let tok = tokens.get(i).context("out of bounds")?;
 
                     let val = match tok {
-                        Token::Var(k) => tdvm.memory.get(k).context("variable doesnt exist")?,
+                        Token::Var(k) => {
+                            &tdvm.memory.get(k).context("variable doesnt exist")?.value
+                        }
                         Token::Value(val) => val,
                         _ => bail!(
                             "command {} on arg {}: got unexpected token",
@@ -101,7 +103,13 @@ impl Command {
             .into_iter()
             .filter_map(|tok| match tok {
                 Token::Value(val) => Some(val),
-                Token::Var(key) => tdvm.memory.get(&key).cloned(),
+                Token::Var(key) => {
+                    let var = tdvm.memory.get(&key).cloned();
+                    match var {
+                        Some(v) => Some(v.value),
+                        None => None,
+                    }
+                }
                 // _ => bail!("command {}: got unexpected token", self.name),
                 // at this point they should all be values right?
                 _ => None,

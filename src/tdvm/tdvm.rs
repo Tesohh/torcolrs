@@ -8,7 +8,7 @@ use crate::tokenizer::{
     tokenizer::tokenize,
 };
 
-use super::{command::Command, commands::commands, value::Value};
+use super::{command::Command, commands::commands, value::Value, var::Var};
 
 #[derive(Debug)]
 pub struct Tdvm {
@@ -16,7 +16,7 @@ pub struct Tdvm {
     linecursor: usize,
     pub commands: Vec<Command>, // TEMP: will change to a hashmap probably, which takes in an array of tokens as args??
     pub types: Vec<String>,
-    pub memory: HashMap<String, Value>,
+    pub memory: HashMap<String, Var>,
 }
 
 impl Default for Tdvm {
