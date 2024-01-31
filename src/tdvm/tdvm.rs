@@ -1,7 +1,7 @@
 #![allow(unused)] // TODO: remove this
 use std::collections::HashMap;
 
-use anyhow::{anyhow, Context, Ok};
+use anyhow::{anyhow, bail, Context, Ok};
 
 use crate::tokenizer::{
     token::{Token, Tokens},
@@ -78,7 +78,41 @@ impl Tdvm {
                 continue;
             }
 
-            let mut tokens = tokenize(line, self);
+            // filter out Comments
+            let mut tokens: Vec<_> = tokenize(line, self)
+                .into_iter()
+                .filter(|tok| match tok {
+                    Token::Comment(_) => false,
+                    _ => true,
+                })
+                .collect();
+
+            let last = tokens.last_mut().context("out of bounds")?;
+            if last == &mut Token::SquirlyOpen {
+                let mut instructions: Vec<Tokens> = vec![];
+                let mut count = 0;
+                for l in self.input.lines().skip(self.linecursor + 1) {
+                    if l.trim().starts_with("}") {
+                        break;
+                    }
+
+                    instructions.push(tokenize(l, self));
+                    count += 1;
+                }
+
+                *last = Token::Value(Value::Block(instructions));
+                self.input = self
+                    .input
+                    .lines()
+                    .enumerate()
+                    .filter(|&(i, _)| i < self.linecursor + 1 || i > self.linecursor + count)
+                    .map(|(_, l)| l)
+                    .collect();
+
+                dbg!(&tokens, &self.input, self.linecursor, count);
+
+                self.linecursor += count;
+            }
 
             // check that the first token is a command
             match tokens.get(0).context("first token doesn't exist")? {

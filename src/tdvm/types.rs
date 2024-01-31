@@ -6,6 +6,7 @@ pub enum Type {
     Str,
     Bool,
     Void,
+    Block,
     Any,
 }
 
@@ -16,6 +17,7 @@ impl Display for Type {
             Type::Str => write!(f, "Str"),
             Type::Bool => write!(f, "Bool"),
             Type::Void => write!(f, "Void"),
+            Type::Block => write!(f, "Block"),
             Type::Any => write!(f, "Any"),
         }
     }

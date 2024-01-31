@@ -7,12 +7,12 @@ fn main() -> anyhow::Result<()> {
     let mut tdvm = Tdvm::default();
     // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
-    tdvm.input = r#"lasa "x" 4
-    stampa x
-    lasa "s" "giura"
-    lasa "x" (jonta s 5)
-    stampa x"#
-        .into();
+    tdvm.input = r#"stampa {
+    stampa "gozzo"
+    lasa "x" 7
+    }
+    "#
+    .into();
 
     dbg!(tdvm.run())
 

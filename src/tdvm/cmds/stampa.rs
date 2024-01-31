@@ -14,7 +14,7 @@ pub fn stampa() -> Command {
         name: "stampa".into(),
         requested_args: args!(val: Any),
         inner: |args, _tdvm| {
-            println!("{}", args.get(0).context("not found")?);
+            println!("{}", args.get(0).context("first arg is empty")?);
             Ok(Value::Void)
         },
     }

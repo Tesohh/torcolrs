@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 use anyhow::bail;
 
+use crate::tokenizer::token::Tokens;
+
 use super::types::Type;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -10,6 +12,7 @@ pub enum Value {
     Num(f64),
     Str(String),
     Array(Vec<Value>),
+    Block(Vec<Tokens>),
     Void,
     // Arg((String, Type))
 }
@@ -25,6 +28,7 @@ impl Name for Value {
             Value::Num(_) => "Num",
             Value::Str(_) => "Str",
             Value::Array(_) => "Array",
+            Value::Block(_) => "Block",
             Value::Void => "Void",
         }
     }
@@ -94,6 +98,7 @@ impl Display for Value {
             }
             Value::Num(v) => write!(f, "{}", v),
             Value::Str(v) => write!(f, "{}", v),
+            Value::Block(_) => write!(f, "[bloch]"),
             Value::Array(_) => todo!(),
             Value::Void => write!(f, "vet"),
         }
@@ -107,6 +112,7 @@ impl Into<Type> for Value {
             Value::Num(_) => Type::Num,
             Value::Str(_) => Type::Str,
             Value::Array(_) => todo!(),
+            Value::Block(_) => Type::Block,
             Value::Void => Type::Void,
         }
     }
@@ -119,6 +125,7 @@ impl Into<Type> for &Value {
             Value::Num(_) => Type::Num,
             Value::Str(_) => Type::Str,
             Value::Array(_) => todo!(),
+            Value::Block(_) => Type::Block,
             Value::Void => Type::Void,
         }
     }
