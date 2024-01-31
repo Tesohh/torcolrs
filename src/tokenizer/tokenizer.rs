@@ -77,14 +77,19 @@ pub fn tokenize(input: &str, tdvm: &Tdvm) -> Tokens {
 #[cfg(test)]
 mod tests {
     use crate::{
-        tdvm::{tdvm::Tdvm, value::Value},
+        tdvm::{tdvm::Tdvm, value::Value, var::Var},
         tokenizer::{token::Token, tokenizer::tokenize},
     };
 
     #[test]
     fn test_tokenize() {
         let mut tdvm = Tdvm::default();
-        tdvm.memory.insert("ciord".into(), Value::Num(34.0));
+        tdvm.memory.insert(
+            "ciord".into(),
+            Var {
+                value: Value::Num(34.0),
+            },
+        );
         assert_eq!(
             tokenize(r#"() {"#, &tdvm),
             vec![Token::Sub(vec![]), Token::SquirlyOpen,]

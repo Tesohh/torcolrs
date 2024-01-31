@@ -29,3 +29,22 @@ pub fn lasa() -> Command {
         },
     }
 }
+#[cfg(test)]
+mod tests {
+    use crate::tdvm::{tdvm::Tdvm, value::Value};
+
+    #[test]
+    fn lasa_test() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"lasa "x" 5
+        lasa "y" "cissy""#
+            .into();
+        tdvm.run().unwrap();
+
+        assert_eq!(tdvm.memory.get("x").unwrap().value, Value::Num(5.0));
+        assert_eq!(
+            tdvm.memory.get("y").unwrap().value,
+            Value::Str("cissy".into())
+        );
+    }
+}

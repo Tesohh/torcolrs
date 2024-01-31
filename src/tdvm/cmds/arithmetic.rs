@@ -34,3 +34,42 @@ pub fn sotra() -> Command {
         },
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tdvm::tdvm::Tdvm;
+
+    use super::*;
+
+    #[test]
+    fn test_jonta() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"lasa "x" (jonta 5 2)"#.into();
+        tdvm.run().unwrap();
+        assert_eq!(tdvm.memory.get("x").unwrap().value, Value::Num(7.0))
+    }
+
+    #[test]
+    fn test_error_jonta() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"lasa "x" (jonta "cissy" 2)"#.into();
+        let err = tdvm.run();
+        assert!(!err.is_ok());
+    }
+
+    #[test]
+    fn test_sotra() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"lasa "x" (sotra 5 2)"#.into();
+        tdvm.run().unwrap();
+        assert_eq!(tdvm.memory.get("x").unwrap().value, Value::Num(3.0))
+    }
+
+    #[test]
+    fn test_error_sotra() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"lasa "x" (sotra "cissy" 2)"#.into();
+        let err = tdvm.run();
+        assert!(!err.is_ok());
+    }
+}
