@@ -26,6 +26,7 @@ macro_rules! args {
     };
 }
 
+#[allow(unused)]
 #[derive(Debug, Clone)]
 pub enum ArgsRequest {
     Limited(Vec<Arg>),
