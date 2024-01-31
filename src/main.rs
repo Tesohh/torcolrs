@@ -11,6 +11,7 @@ fn main() -> anyhow::Result<()> {
     stampa "gozzo"
     lasa "x" 7
     }
+    stampa "cissyyyy"
     "#
     .into();
 

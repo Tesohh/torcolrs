@@ -105,13 +105,9 @@ impl Tdvm {
                     .input
                     .lines()
                     .enumerate()
-                    .filter(|&(i, _)| i < self.linecursor + 1 || i > self.linecursor + count)
-                    .map(|(_, l)| l)
+                    .filter(|&(i, _)| i < self.linecursor + 1 || i > self.linecursor + count + 1)
+                    .map(|(_, l)| String::from(l) + "\n")
                     .collect();
-
-                dbg!(&tokens, &self.input, self.linecursor, count);
-
-                self.linecursor += count;
             }
 
             // check that the first token is a command
