@@ -35,7 +35,7 @@ impl Tdvm {
     fn gen_err(&self, err: anyhow::Error) -> anyhow::Result<()> {
         return Err(anyhow!("[tdvm: line {}] {}", self.linecursor + 1, err));
     }
-    fn run_cmd(&mut self, tokens: &mut Tokens) -> anyhow::Result<Value> {
+    pub fn run_cmd(&mut self, tokens: &mut Tokens) -> anyhow::Result<Value> {
         // first run all subs
         // recursively...
         for i in 0..tokens.len() {
@@ -61,6 +61,33 @@ impl Tdvm {
 
         return cmd.run(tokens.to_vec(), self);
     }
+
+    pub fn run_scoped(&mut self, input: String) -> anyhow::Result<()> {
+        let old_input = self.input.clone();
+        let old_mem = self.memory.clone();
+        let old_cursor = self.linecursor.clone();
+
+        self.input = input;
+        self.linecursor = 0;
+        self.run()?;
+
+        self.input = old_input;
+        self.linecursor = old_cursor;
+        let mut remove: Vec<String> = vec![];
+        for (k, v) in &self.memory {
+            if old_mem.contains_key(k) {
+                continue;
+            }
+            remove.push(k.into());
+        }
+
+        for v in remove {
+            self.memory.remove(&v).context("cannot remove key")?;
+        }
+
+        Ok(())
+    }
+
     pub fn run(&mut self) -> anyhow::Result<()> {
         if self.input.is_empty() {
             return Err(anyhow!("input is empty"));
@@ -89,41 +116,59 @@ impl Tdvm {
 
             let last = tokens.last_mut().context("out of bounds")?;
             if last == &mut Token::SquirlyOpen {
-                let mut instructions: Vec<Tokens> = vec![];
+                let mut inner: String = "".into();
                 let mut count = 0;
-                for l in self.input.lines().skip(self.linecursor + 1) {
-                    if l.trim().starts_with("}") {
+                let mut nesting_level = 1;
+                let mut delete_targets: Vec<usize> = vec![];
+
+                for (i, l) in self.input.lines().skip(self.linecursor + 1).enumerate() {
+                    for c in l.chars() {
+                        if c == '{' {
+                            nesting_level += 1;
+                        } else if c == '}' {
+                            nesting_level -= 1;
+                            delete_targets.push(i);
+                            if nesting_level == 0 {
+                                count = i + 1;
+                                break;
+                            }
+                        }
+                    }
+
+                    if nesting_level == 0 {
                         break;
                     }
 
-                    instructions.push(tokenize(l, self));
-                    count += 1;
+                    inner += &String::from(l);
+                    inner += "\n";
+                    delete_targets.push(i);
+                    // it works correctly: we just need to take the } out
+
+                    // maybe it's becasue it's a raw string it
+                    // doesn't recognize \n as a newline (everything gets treated as one line)
+                    // or maybe collect puts them in a whole
+                    // line because it's trying to make a
+                    // String, maybe if we do Vec<String>
                 }
 
-                *last = Token::Value(Value::Block(instructions));
+                *last = Token::Value(Value::Block(inner));
                 self.input = self
                     .input
                     .lines()
                     .enumerate()
-                    .filter(|&(i, _)| i < self.linecursor + 1 || i > self.linecursor + count + 1)
+                    // .filter(|&(i, _)| i < self.linecursor + 1 || i > self.linecursor + count)
+                    .filter(|&(i, _)| !delete_targets.contains(&i))
                     .map(|(_, l)| String::from(l) + "\n")
                     .collect();
             }
 
             // check that the first token is a command
-            match tokens.get(0).context("first token doesn't exist")? {
+            // dbg!(&self.linecursor, &tokens);
+            let first = tokens.get(0).context("first token doesn't exist")?;
+            match first {
                 Token::Cmd(_) => (),
-                _ => return self.gen_err(anyhow!("first token is not a Cmd")),
+                _ => return self.gen_err(anyhow!("first token is not a Cmd {:?}", first)),
             }
-
-            // check that parentheses are closed
-            // let open_par_count = tokens.iter().filter(|tok| tok == &&Token::ParOpen).count();
-            // let close_par_count = tokens.iter().filter(|tok| tok == &&Token::ParClose).count();
-            // if open_par_count != close_par_count {
-            //     return self.gen_err(anyhow!(
-            //         "open parentheses count is different to the closed parenthesis count"
-            //     ));
-            // }
 
             // (try to) execute subs
             self.run_cmd(&mut tokens)?;

@@ -12,7 +12,7 @@ pub enum Value {
     Num(f64),
     Str(String),
     Array(Vec<Value>),
-    Block(Vec<Tokens>),
+    Block(String),
     Void,
     // Arg((String, Type))
 }
@@ -39,6 +39,7 @@ pub trait Extract {
     fn extract_num(&self) -> anyhow::Result<f64>;
     fn extract_str(&self) -> anyhow::Result<String>;
     fn extract_array(&self) -> anyhow::Result<Vec<Value>>;
+    fn extract_block(&self) -> anyhow::Result<String>;
 }
 
 impl Extract for Value {
@@ -69,6 +70,13 @@ impl Extract for Value {
             _ => bail!("cannot extract Array from {}", self.name()),
         }
     }
+
+    fn extract_block(&self) -> anyhow::Result<String> {
+        match self {
+            Value::Block(v) => Ok(v.into()),
+            _ => bail!("cannot extract Block from {}", self.name()),
+        }
+    }
 }
 
 impl Extract for &Value {
@@ -83,6 +91,9 @@ impl Extract for &Value {
     }
     fn extract_array(&self) -> anyhow::Result<Vec<Value>> {
         (*self).extract_array()
+    }
+    fn extract_block(&self) -> anyhow::Result<String> {
+        (*self).extract_block()
     }
 }
 
