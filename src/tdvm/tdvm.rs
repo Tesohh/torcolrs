@@ -17,6 +17,7 @@ pub struct Tdvm {
     pub commands: Vec<Command>, // TEMP: will change to a hashmap probably, which takes in an array of tokens as args??
     pub types: Vec<String>,
     pub memory: HashMap<String, Var>,
+    pub test_memory: HashMap<String, Var>,
 }
 
 impl Default for Tdvm {
@@ -27,11 +28,16 @@ impl Default for Tdvm {
             commands: commands(),
             types: vec!["Num".into(), "Str".into(), "Bool".into()],
             memory: Default::default(),
+            test_memory: Default::default(),
         }
     }
 }
 
 impl Tdvm {
+    fn test_eq(&self, key: &str, expect: Value) -> bool {
+        return self.test_memory.get(key).unwrap().value == expect;
+    }
+
     fn gen_err(&self, err: anyhow::Error) -> anyhow::Result<()> {
         return Err(anyhow!("[tdvm: line {}] {}", self.linecursor + 1, err));
     }

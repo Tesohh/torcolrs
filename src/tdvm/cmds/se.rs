@@ -26,3 +26,32 @@ pub fn se() -> Command {
         },
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::tdvm::tdvm::Tdvm;
+
+    #[test]
+    fn test_scope_execution() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"se vera {
+            lasa "x" 1
+        }"#
+        .into();
+        tdvm.run().unwrap();
+
+        assert!(tdvm.memory.is_empty());
+    }
+
+    #[test]
+    fn test_se_skipping() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"se faus {
+            testlasa "x" 1
+        }"#
+        .into();
+        tdvm.run().unwrap();
+
+        assert!(tdvm.test_memory.is_empty());
+    }
+}
