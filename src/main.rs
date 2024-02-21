@@ -8,13 +8,10 @@ fn main() -> anyhow::Result<()> {
     // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
     tdvm.input = r#"
-    se vera {
-        stampa "cissy1"
-        se vera { 
-            stampa "cissy2"
-        }
-    }
-    stampa "cissy3"
+    stampa (eq 5 5)
+    stampa (neq 5 5)
+    stampa (greater 2 1)
+    stampa (lesser 2 3)
     "#
     .into();
 
