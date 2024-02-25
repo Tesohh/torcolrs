@@ -60,13 +60,24 @@ impl Command {
                         continue;
                     }
 
+                    let mut badbadbadbad_variable_that_shouldnt_exist: Value = Value::Void;
+                    let mut badbadbadbad_variable_that_shouldnt_exist_v2: Value = Value::Void;
+
                     let tok = tokens.get(i).context("out of bounds")?;
 
                     let val = match tok {
                         Token::Var(k) => {
                             &tdvm.memory.get(k).context("variable doesnt exist")?.value
                         }
-                        Token::Value(val) => val,
+                        Token::Value(v) => v,
+                        Token::Ident(v) => {
+                            badbadbadbad_variable_that_shouldnt_exist = Value::Ident(v.to_string());
+                            &badbadbadbad_variable_that_shouldnt_exist
+                        }
+                        Token::Type(v) => {
+                            badbadbadbad_variable_that_shouldnt_exist_v2 = Value::Type(v.clone());
+                            &badbadbadbad_variable_that_shouldnt_exist_v2
+                        }
                         _ => bail!(
                             "command {} on arg {}: got unexpected token",
                             self.name,
@@ -111,6 +122,8 @@ impl Command {
                         None => None,
                     }
                 }
+                Token::Type(val) => Some(Value::Type(val)),
+                Token::Ident(val) => Some(Value::Ident(val)),
                 // _ => bail!("command {}: got unexpected token", self.name),
                 // at this point they should all be values right?
                 _ => None,

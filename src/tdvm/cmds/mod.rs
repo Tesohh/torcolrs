@@ -7,6 +7,7 @@ pub mod lasa;
 pub mod se;
 pub mod stampa;
 pub mod testlasa;
+pub mod cmd;
 
 pub fn commands() -> Vec<Command> {
     vec![

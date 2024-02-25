@@ -77,7 +77,7 @@ pub fn tokenize(input: &str, tdvm: &Tdvm) -> Tokens {
 #[cfg(test)]
 mod tests {
     use crate::{
-        tdvm::{tdvm::Tdvm, value::Value, var::Var},
+        tdvm::{tdvm::Tdvm, types::Type, value::Value, var::Var},
         tokenizer::{token::Token, tokenizer::tokenize},
     };
 
@@ -132,18 +132,18 @@ mod tests {
                 Token::Cmd("stampa".into()),
                 Token::Value(Value::Bool(true)),
                 Token::Sub(vec![Token::Value(Value::Bool(false))]),
-                Token::Unknown("GOZZO".into()),
+                Token::Ident("GOZZO".into()),
             ]
         );
 
         assert_eq!(
             tokenize(r#"Num Str Bool ciord fassa"#, &tdvm),
             vec![
-                Token::Type("Num".into()),
-                Token::Type("Str".into()),
-                Token::Type("Bool".into()),
+                Token::Type(Type::Num),
+                Token::Type(Type::Str),
+                Token::Type(Type::Bool),
                 Token::Var("ciord".into()),
-                Token::Unknown("fassa".into()),
+                Token::Ident("fassa".into()),
             ]
         );
 

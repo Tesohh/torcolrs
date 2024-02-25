@@ -9,7 +9,7 @@ fn identify_word(input: String, tdvm: &Tdvm) -> Token {
     }
 
     if tdvm.types.contains(&input) {
-        return Token::Type(input);
+        return Token::Type(input.into());
     }
 
     if tdvm.memory.contains_key(&input) {
@@ -20,7 +20,7 @@ fn identify_word(input: String, tdvm: &Tdvm) -> Token {
         "vera" => Token::Value(Value::Bool(true)),
         "faus" => Token::Value(Value::Bool(false)),
 
-        &_ => Token::Unknown(input),
+        &_ => Token::Ident(input),
     }
 }
 
