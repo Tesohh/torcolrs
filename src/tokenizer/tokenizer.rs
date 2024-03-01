@@ -27,20 +27,32 @@ pub fn tokenize(input: &str, tdvm: &Tdvm) -> Tokens {
         if input
             .chars()
             .nth(cursor)
-            .expect("out of bounds")
+            .expect("out of bounds while tokenizing")
             .is_whitespace()
         {
             cursor += 1;
             continue;
         }
 
-        if input.chars().nth(cursor).expect("out of bounds") == '#' {
-            let comment = input.get(cursor..).expect("out of bounds");
+        if input
+            .chars()
+            .nth(cursor)
+            .expect("out of bounds while checking for comments")
+            == '#'
+        {
+            let comment = input
+                .get(cursor..)
+                .expect("out of bounds while parsing comment");
             tokens.push(Token::Comment(comment.into()));
             break;
         }
 
-        let tok = try_identify(input.chars().nth(cursor).expect("out of bounds"));
+        let tok = try_identify(
+            input
+                .chars()
+                .nth(cursor)
+                .expect("out of bounds while identifying tokens"),
+        );
         if let Some(v) = tok {
             tokens.push(v);
             cursor += 1;

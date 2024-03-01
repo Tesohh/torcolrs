@@ -3,7 +3,7 @@ use anyhow::Context;
 use crate::{
     args,
     tdvm::{
-        command::{Arg, ArgsRequest, Command},
+        command::{Arg, ArgsRequest, Command, Inner},
         types::Type,
         value::{Extract, Value},
     },
@@ -13,7 +13,7 @@ pub fn se() -> Command {
     Command {
         name: "se".into(),
         requested_args: args!(condition: Bool, block: Block),
-        inner: |args, tdvm| {
+        inner: Inner::Rusty(|args, tdvm| {
             let cond = args.get(0).context("cond")?.extract_bool()?;
             let block = args.get(1).context("block")?.extract_block()?;
             if !cond {
@@ -23,7 +23,7 @@ pub fn se() -> Command {
             tdvm.run_scoped(block)?;
 
             Ok(Value::Void)
-        },
+        }),
     }
 }
 

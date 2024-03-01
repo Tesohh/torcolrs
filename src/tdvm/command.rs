@@ -35,10 +35,16 @@ pub enum ArgsRequest {
 }
 
 #[derive(Debug, Clone)]
+pub enum Inner {
+    Rusty(fn(args: Vec<Value>, tdvm: &mut Tdvm) -> anyhow::Result<Value>),
+    Torcoly(String),
+}
+
+#[derive(Debug, Clone)]
 pub struct Command {
     pub name: String,
     pub requested_args: ArgsRequest,
-    pub inner: fn(args: Vec<Value>, tdvm: &mut Tdvm) -> anyhow::Result<Value>,
+    pub inner: Inner,
 }
 
 impl Command {
@@ -130,6 +136,15 @@ impl Command {
             })
             .collect();
 
-        return (self.inner)(values, tdvm);
+        match &self.inner {
+            Inner::Rusty(f) => f(values, tdvm),
+            Inner::Torcoly(s) => {
+                tdvm.run_scoped(s.to_string())?;
+                Ok(Value::Void) // TODO: get return value from magic memory key for returns
+                                // (return@{command_name}#{command_run_id})
+                                // command_run_id is a random thing decided pre command run
+                                // or just a ______return________ address??
+            }
+        }
     }
 }

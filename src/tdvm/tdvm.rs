@@ -120,7 +120,14 @@ impl Tdvm {
                 })
                 .collect();
 
-            let last = tokens.last_mut().context("out of bounds")?;
+            if tokens.len() == 0 {
+                self.linecursor += 1;
+                continue;
+            }
+
+            let last = tokens
+                .last_mut()
+                .context("out of bounds while cheking squirlyopen")?;
             if last == &mut Token::SquirlyOpen {
                 let mut inner: String = "".into();
                 let mut count = 0;

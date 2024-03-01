@@ -8,10 +8,15 @@ fn main() -> anyhow::Result<()> {
     // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
     tdvm.input = r#"
-    stampa eijoiwf 
-    stampa wefioiowe
-    stampa iowfeioewf
-    stampa (lesser 2 3)
+    cmd cissy {
+        stampa "ciao leo"
+    }
+    cissy
+    cissy
+    cissy
+    cissy
+    cissy
+    cissy "gozzo" 12 2 4 5 5 
     "#
     .into();
 
