@@ -68,7 +68,7 @@ impl Tdvm {
         return cmd.run(tokens.to_vec(), self);
     }
 
-    pub fn run_scoped(&mut self, input: String) -> anyhow::Result<()> {
+    pub fn run_scoped(&mut self, input: String) -> anyhow::Result<Value> {
         let old_input = self.input.clone();
         let old_mem = self.memory.clone();
         let old_cursor = self.linecursor.clone();
@@ -76,11 +76,16 @@ impl Tdvm {
         self.input = input;
         self.linecursor = 0;
         self.run()?;
+        // TODO: get the xXx_return_xXx (if any)
+        // and DONT add it to `remove` so it can be getted outside
 
         self.input = old_input;
         self.linecursor = old_cursor;
         let mut remove: Vec<String> = vec![];
         for (k, v) in &self.memory {
+            if k == "xXx_return_xXx" {
+                continue;
+            }
             if old_mem.contains_key(k) {
                 continue;
             }
@@ -91,7 +96,16 @@ impl Tdvm {
             self.memory.remove(&v).context("cannot remove key")?;
         }
 
-        Ok(())
+        let ret = self.memory.get("xXx_return_xXx");
+        if let Some(var) = ret {
+            let val = var.value.clone();
+            self.memory
+                .remove("xXx_return_xXx")
+                .context("cannot remove return")?;
+            Ok(val)
+        } else {
+            Ok(Value::Void)
+        }
     }
 
     pub fn run(&mut self) -> anyhow::Result<()> {
@@ -179,7 +193,12 @@ impl Tdvm {
             // dbg!(&self.linecursor, &tokens);
             let first = tokens.get(0).context("first token doesn't exist")?;
             match first {
-                Token::Cmd(_) => (),
+                Token::Cmd(cmd_name) => {
+                    (if cmd_name == "return" {
+                        self.run_cmd(&mut tokens)?;
+                        break;
+                    })
+                }
                 _ => return self.gen_err(anyhow!("first token is not a Cmd {:?}", first)),
             }
 

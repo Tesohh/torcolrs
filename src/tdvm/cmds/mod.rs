@@ -8,6 +8,7 @@ pub mod lasa;
 pub mod se;
 pub mod stampa;
 pub mod testlasa;
+pub mod treturn;
 
 pub fn commands() -> Vec<Command> {
     vec![
@@ -22,5 +23,6 @@ pub fn commands() -> Vec<Command> {
         greaterlesser::greater(),
         greaterlesser::lesser(),
         cmd::cmd(),
+        treturn::treturn(),
     ]
 }

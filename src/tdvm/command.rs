@@ -66,7 +66,9 @@ impl Command {
                         continue;
                     }
 
+                    #[allow(unused)]
                     let mut badbadbadbad_variable_that_shouldnt_exist: Value = Value::Void;
+                    #[allow(unused)]
                     let mut badbadbadbad_variable_that_shouldnt_exist_v2: Value = Value::Void;
 
                     let tok = tokens.get(i).context("out of bounds")?;
@@ -139,11 +141,11 @@ impl Command {
         match &self.inner {
             Inner::Rusty(f) => f(values, tdvm),
             Inner::Torcoly(s) => {
-                tdvm.run_scoped(s.to_string())?;
-                Ok(Value::Void) // TODO: get return value from magic memory key for returns
-                                // (return@{command_name}#{command_run_id})
-                                // command_run_id is a random thing decided pre command run
-                                // or just a ______return________ address??
+                let ret = tdvm.run_scoped(s.to_string())?;
+                Ok(ret) // TODO: get return value from magic memory key for returns
+                        // (return@{command_name}#{command_run_id})
+                        // command_run_id is a random thing decided pre command run
+                        // or just a ______return________ address??
             }
         }
     }

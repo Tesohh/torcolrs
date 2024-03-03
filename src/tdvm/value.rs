@@ -2,8 +2,6 @@ use std::fmt::Display;
 
 use anyhow::bail;
 
-use crate::tokenizer::token::Tokens;
-
 use super::types::Type;
 
 #[derive(Debug, PartialEq, Clone)]

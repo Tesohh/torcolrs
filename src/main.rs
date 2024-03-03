@@ -9,14 +9,10 @@ fn main() -> anyhow::Result<()> {
 
     tdvm.input = r#"
     cmd cissy {
-        stampa "ciao leo"
+        return 4
     }
-    cissy
-    cissy
-    cissy
-    cissy
-    cissy
-    cissy "gozzo" 12 2 4 5 5 
+    
+    stampa (jonta (cissy) (cissy))
     "#
     .into();
 
@@ -36,7 +32,7 @@ fn main() -> anyhow::Result<()> {
     // linecursor accordingly.
     // ggez clap
 
-    dbg!(tdvm.run())
+    tdvm.run()
 
     // dbg!(tdvm);
     // dbg!(tokenize(
