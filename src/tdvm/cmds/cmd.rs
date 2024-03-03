@@ -27,18 +27,25 @@ pub fn cmd() -> Command {
     }
 }
 
-// Ident
-// PARSING STAGE
-// when you see some plain text, it may be a Var, Ident or a Type
-// x add tokens for Ident and Type
-// x add values for Ident and Type
-// x add types for  Ident and Type
-//
-// PRERUN STAGE
-// x  Nothing much, just add cases to verify_args
-//
-// RUN STAGE
-//    create the command and add it to the tdvm
-//    do something to parse custom command argument types and such?
-//      perhaps with a command that takes a name and a type, and makes a string with all data that
-//      can be "parsed" from cmd?
+#[cfg(test)]
+mod tests {
+    use crate::tdvm::{tdvm::Tdvm, value::Value};
+
+    #[test]
+    fn test_cmd_saving() {
+        let mut tdvm = Tdvm::default();
+        tdvm.input = r#"
+            cmd contacts {
+                return "underground"
+            }
+            lasa "x" (contacts)
+        "#
+        .into();
+        tdvm.run().unwrap();
+
+        assert_eq!(
+            tdvm.memory.get("x").unwrap().value,
+            Value::Str("underground".into())
+        )
+    }
+}
