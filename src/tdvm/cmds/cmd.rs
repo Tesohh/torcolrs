@@ -38,7 +38,7 @@ mod tests {
             cmd contacts {
                 return "underground"
             }
-            lasa "x" (contacts)
+            lasa x (contacts)
         "#
         .into();
         tdvm.run().unwrap();

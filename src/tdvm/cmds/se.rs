@@ -35,7 +35,7 @@ mod tests {
     fn test_scope_execution() {
         let mut tdvm = Tdvm::default();
         tdvm.input = r#"se vera {
-            lasa "x" 1
+            lasa x 1
         }"#
         .into();
         tdvm.run().unwrap();

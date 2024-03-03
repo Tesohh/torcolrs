@@ -13,7 +13,7 @@ use crate::{
 pub fn lasa() -> Command {
     Command {
         name: "lasa".into(),
-        requested_args: args!(name: Str, value: Any),
+        requested_args: args!(name: Ident, value: Any),
         inner: Inner::Rusty(|args, tdvm| {
             let name = args.get(0).context("name")?.extract_str()?;
             let value = args.get(1).context("value")?;
@@ -36,8 +36,8 @@ mod tests {
     #[test]
     fn lasa_test() {
         let mut tdvm = Tdvm::default();
-        tdvm.input = r#"lasa "x" 5
-        lasa "y" "cissy""#
+        tdvm.input = r#"lasa x 5
+        lasa y "cissy""#
             .into();
         tdvm.run().unwrap();
 
