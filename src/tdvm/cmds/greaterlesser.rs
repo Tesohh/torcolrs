@@ -11,6 +11,7 @@ use crate::{
 
 pub fn greater() -> Command {
     Command {
+        // Maor
         name: "greater".into(),
         requested_args: args!(lhs: Num, rhs: Num),
         inner: Inner::Rusty(|args, _| {
@@ -22,6 +23,7 @@ pub fn greater() -> Command {
     }
 }
 pub fn lesser() -> Command {
+    // Minor
     Command {
         name: "lesser".into(),
         requested_args: args!(lhs: Num, rhs: Num),

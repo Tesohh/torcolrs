@@ -11,6 +11,7 @@ use crate::{
 
 pub fn eq() -> Command {
     Command {
+        // valif
         name: "eq".into(),
         requested_args: args!(lhs: Any, rhs: Any),
         inner: Inner::Rusty(|args, _| {
@@ -23,6 +24,7 @@ pub fn eq() -> Command {
 }
 pub fn neq() -> Command {
     Command {
+        // desvalif
         name: "neq".into(),
         requested_args: args!(lhs: Any, rhs: Any),
         inner: Inner::Rusty(|args, _| {

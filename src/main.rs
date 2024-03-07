@@ -1,3 +1,5 @@
+use std::fs::read;
+
 use crate::tdvm::tdvm::Tdvm;
 
 mod tdvm;
@@ -7,14 +9,7 @@ fn main() -> anyhow::Result<()> {
     let mut tdvm = Tdvm::default();
     // dbg!(tokenize(r#"(stampa 5 4.2 ") )"#, &tdvm));
 
-    tdvm.input = r#"
-    cmd cissy {
-        return 4
-    }
-    
-    stampa (jonta (cissy) (cissy))
-    "#
-    .into();
+    tdvm.input = String::from_utf8(read("tr/cissy.tr")?)?;
 
     // this is a problem: run doesnt recognize subblocks as a block but as a SquirlyOpen and thats it.
     // You needa do a parse_block function that takes in Vec<Tokens> that does the whole put in a

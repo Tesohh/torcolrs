@@ -5,6 +5,7 @@ pub mod cmd;
 pub mod eqchecks;
 pub mod greaterlesser;
 pub mod lasa;
+pub mod no;
 pub mod se;
 pub mod stampa;
 pub mod testlasa;
@@ -24,5 +25,6 @@ pub fn commands() -> Vec<Command> {
         greaterlesser::lesser(),
         cmd::cmd(),
         treturn::treturn(),
+        no::no(),
     ]
 }
